@@ -2,3 +2,6 @@
 	path = cs370/pockwester
 	url = git://github.com/zgthompson/pockwester.git
 
+[submodule "cs355/ssu_schedule_builder"]
+	path = cs355/ssu_schedule_builder
+	url = https://github.com/Alfwich/ssu_schedule_builder
