@@ -1,0 +1,3 @@
+[submodule "cs370/pockwester"]
+	path = cs370/pockwester
+	url = git://github.com/zgthompson/pockwester.git
