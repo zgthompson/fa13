@@ -1,0 +1,37 @@
+Exercises 6-2, 6-4
+
+6.2)
+    a)
+        (gdb) i r rip
+        rip     0x4005de    0x4005de <main+66>
+
+        The address of the next instruction to be executed is 0x4005de.
+
+    b)
+       rbx will be equal to -1 + whatever value was entered by the user.
+
+6.4)
+    (gdb) print myString
+        $1 = "abcd\0
+
+
+#include <unistd.h>
+#include <stdio.h>
+
+int main(void)
+{
+    char myString[256];
+    char c;
+    int count = 0;
+
+    write(STDOUT_FILENO, "Enter one line: ", 16);
+
+    while ((c = getchar()) != '\n') {
+        myString[count++] = c;
+    }
+    myString[count] = '\0';
+
+    printf("%s\n", myString);
+    //write(STDOUT_FILENO, myString, count);
+    return 0;
+}
