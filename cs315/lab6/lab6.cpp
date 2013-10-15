@@ -23,6 +23,11 @@ void tile(BMP& Input, BMP& Output) {
                 0, ScaledInput -> TellHeight() - 1, Output, Output.TellWidth() - 3 * ScaledInput -> TellWidth() / 2, 0);
 
         // SE quadrant
+        RangedPixelToPixelCopy(Output, Output.TellWidth() - ScaledInput -> TellWidth(), Output.TellWidth() - 1, ScaledInput -> TellHeight() / 2,
+                ScaledInput -> TellHeight()  - 1, Output, Output.TellWidth() - ScaledInput -> TellWidth(), ScaledInput -> TellHeight());
+
+        RangedPixelToPixelCopy(Output, Output.TellWidth() - ScaledInput -> TellWidth(), Output.TellWidth() - 1, ScaledInput -> TellHeight() / 2,
+                ScaledInput -> TellHeight() - 1, Output, Output.TellWidth() - ScaledInput -> TellWidth(), 3 * ScaledInput -> TellHeight() / 2);
     }
 
 }
@@ -30,7 +35,16 @@ void tile(BMP& Input, BMP& Output) {
 int main(void) {
     BMP in, out;
     in.ReadFromFile("in.bmp");
-    out.SetSize(in.TellWidth(), in.TellHeight());
-    tile(in, out);
-    out.WriteToFile("output.bmp");
+    int width = in.TellWidth();
+    int height = in.TellHeight();
+
+    // width and height must be equal, nonzero, and powers of 2
+    if (width == height && width != 0 && ((width & (width - 1)) == 0)) {
+        out.SetSize(in.TellWidth(), in.TellHeight());
+        tile(in, out);
+        out.WriteToFile("output.bmp");
+    }
+    else {
+        std::cout << "Width and height of in.bmp must be equal, nonzero, and powers of 2" << std::endl;
+    }
 }
