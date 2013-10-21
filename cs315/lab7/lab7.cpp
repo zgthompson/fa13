@@ -2,6 +2,21 @@
 #include <vector>
 #include <queue>
 
+template<class T>
+class Queue : public std::queue<T> {
+    public:
+        T pop() {
+            T tmp = std::queue<T>::front();
+            std::queue<T>::pop();
+            return tmp;
+        }
+};
+
+struct Point {
+    int x, y;
+};
+
+
 void toBlackAndWhite(BMP &image) {
 
     int total, newColor;
@@ -34,19 +49,6 @@ void makeGreen(RGBApixel* pixel) {
     pixel->Green = 255;
 }
 
-template<class T>
-class Queue : public std::queue<T> {
-    public:
-        T pop() {
-            T tmp = std::queue<T>::front();
-            std::queue<T>::pop();
-            return tmp;
-        }
-};
-
-struct Point {
-    int x, y;
-};
 
 bool validCoords(int x, int y, int xmax, int ymax) {
     return x < xmax && y < ymax && x >= 0 && y >=0;
@@ -75,7 +77,7 @@ int main(void) {
         for (int i = 0; i < width; ++i) {
 
             // check if current pixel is black
-            if ( isBlack( TextImage(i,j) ) ) {
+            if ( !visited[i][j] && isBlack( TextImage(i,j) ) ) {
 
                 // we have found a new character
                 ++symbolCount;
@@ -96,9 +98,10 @@ int main(void) {
                 while (!Q.empty()) {
                     // remove curPoint from queue
                     curPoint = Q.pop();
-                    // grab x and y coords
+                    // grab x and y coords and cleanup curPoint
                     curx = curPoint -> x;
                     cury = curPoint -> y;
+                    delete curPoint;
                     
                     // color the pixel green
                     makeGreen(TextImage(curx,cury));
@@ -113,20 +116,25 @@ int main(void) {
                     // check out the neighbors
                     for (int x = -1; x < 2; ++x) {
                         for (int y = -1; y < 2; ++y) {
-                            neighx = curx + x;
-                            neighy = cury + y;
+                            if (!(x == 0 && y == 0)) {
+                                neighx = curx + x;
+                                neighy = cury + y;
 
-                            if (    validCoords(neighx, neighy, width, height) &&
-                                    isBlack( TextImage(neighx, neighy) ) ) {
-                                // create new point
-                                newPoint = new Point;
-                                newPoint -> x = neighx;
-                                newPoint -> y = neighy;
+                                if (    validCoords(neighx, neighy, width, height) &&
+                                        isBlack( TextImage(neighx, neighy) ) ) {
+                                    // create new point
+                                    newPoint = new Point;
+                                    newPoint -> x = neighx;
+                                    newPoint -> y = neighy;
 
-                                // insert it into queue
-                                Q.push(newPoint);
+                                    // insert it into queue
+                                    Q.push(newPoint);
+
+                                    // mark as visited
+                                    visited[i][j] = true;
 
                                 
+                                }
                             }
                         }
                     }
