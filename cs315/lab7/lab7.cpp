@@ -1,4 +1,5 @@
 #include "EasyBMP.h"
+#include <iostream>
 #include <vector>
 #include <queue>
 
@@ -69,8 +70,6 @@ void drawBox(BMP &image, int lowx, int lowy, int highx, int highy) {
         image.SetPixel(highx, j, redPixel);
     }
 }
-        
-
 
 bool validCoords(int x, int y, int xmax, int ymax) {
     return x < xmax && y < ymax && x >= 0 && y >=0;
@@ -88,18 +87,29 @@ int main(void) {
     std::vector< std::vector<bool> > visited(width, std::vector<bool>(height, false));
 
     // character count
-    int symbolCount = 0;
+    int symbolCount = 0, lineCount = 0;
+
+    bool thisLineWhite = true, lastLineWhite = true;
 
     Queue<Point*> Q;
 
-    int lowx, lowy, highx, highy, curx, cury, neighx, neighy;
+    int lowx, lowy, highx, highy, curx, cury, neighx, neighy, lineBottom = -1;
     Point* curPoint;
 
     for (int j = 0; j < height; ++j) {
+
+        // if j is past lineBottom, it starts out as white line
+        if (j > lineBottom) {
+            thisLineWhite = true;
+        }
+
         for (int i = 0; i < width; ++i) {
 
             // check if current pixel is black
             if ( !visited[i][j] && isBlack( TextImage(i,j) ) ) {
+
+                // this line has a black pixel
+                thisLineWhite = false;
 
                 // we have found a new character
                 ++symbolCount;
@@ -133,7 +143,7 @@ int main(void) {
                     else if (curx > highx) highx = curx;
 
                     if (cury < lowy) lowy = cury;
-                    else if (cury > highy) highy = highx;
+                    else if (cury > highy) highy = cury;
 
                     // check out the neighbors
                     for (int x = -1; x < 2; ++x) {
@@ -143,7 +153,9 @@ int main(void) {
                                 neighy = cury + y;
 
                                 if (    validCoords(neighx, neighy, width, height) &&
-                                        isBlack( TextImage(neighx, neighy) ) ) {
+                                        !visited[neighx][neighy] &&
+                                        isBlack( TextImage(neighx, neighy) )    ) 
+                                {
                                     // create new point
                                     newPoint = new Point;
                                     newPoint -> x = neighx;
@@ -153,7 +165,7 @@ int main(void) {
                                     Q.push(newPoint);
 
                                     // mark as visited
-                                    visited[i][j] = true;
+                                    visited[neighx][neighy] = true;
 
                                 
                                 }
@@ -164,9 +176,19 @@ int main(void) {
 
                 // draw red box around character
                 drawBox(TextImage, lowx - 1, lowy - 1, highx + 1, highy + 1);
+                lineBottom = highy;
             }
         }
+
+        if (lastLineWhite && !thisLineWhite) {
+            ++lineCount;
+        }
+
+        lastLineWhite = thisLineWhite;
     }
-    
+
     TextImage.WriteToFile("output.bmp");
+    std::cout << "symbols: " << symbolCount << std::endl;
+    std::cout << "lines: " << lineCount << std::endl;
+
 }
