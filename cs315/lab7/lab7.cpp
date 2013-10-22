@@ -49,6 +49,28 @@ void makeGreen(RGBApixel* pixel) {
     pixel->Green = 255;
 }
 
+void drawBox(BMP &image, int lowx, int lowy, int highx, int highy) {
+
+    RGBApixel redPixel;
+    // make pixel red
+    redPixel.Red = 255;
+    redPixel.Blue = 0;
+    redPixel.Green = 0;
+
+    // color upper and bottom bounds
+    for (int i = lowx; i <= highx; ++i) {
+        image.SetPixel(i, lowy, redPixel);
+        image.SetPixel(i, highy, redPixel);
+    }
+    
+    // color left and right bounds
+    for (int j = lowy; j <= highy; ++j) {
+        image.SetPixel(lowx, j, redPixel);
+        image.SetPixel(highx, j, redPixel);
+    }
+}
+        
+
 
 bool validCoords(int x, int y, int xmax, int ymax) {
     return x < xmax && y < ymax && x >= 0 && y >=0;
@@ -139,6 +161,9 @@ int main(void) {
                         }
                     }
                 }
+
+                // draw red box around character
+                drawBox(TextImage, lowx - 1, lowy - 1, highx + 1, highy + 1);
             }
         }
     }
