@@ -3,6 +3,7 @@
 #include <vector>
 #include <queue>
 
+
 template<class T>
 class Queue : public std::queue<T> {
     public:
@@ -13,8 +14,15 @@ class Queue : public std::queue<T> {
         }
 };
 
+
 struct Point {
-    int x, y;
+    int x;
+    int y;
+
+    Point(int inx, int iny) { 
+        x = inx;
+        y = iny;
+    }
 };
 
 
@@ -75,26 +83,19 @@ bool validCoords(int x, int y, int xmax, int ymax) {
     return x < xmax && y < ymax && x >= 0 && y >=0;
 }
 
-int main(void) {
-
-    BMP TextImage;
-    TextImage.ReadFromFile("text.bmp");
-    toBlackAndWhite(TextImage);
+void countAndColor(BMP &TextImage, int &symbolCount, int &lineCount) {
 
     int width = TextImage.TellWidth(), height = TextImage.TellHeight();
 
-    // a vector of bool vectors, simililar to a 2D array but dynamically allocated
+    // a vector of bool vectors
     std::vector< std::vector<bool> > visited(width, std::vector<bool>(height, false));
 
-    // character count
-    int symbolCount = 0, lineCount = 0;
-
+    // first line is white by default
     bool thisLineWhite = true, lastLineWhite = true;
 
-    Queue<Point*> Q;
+    Queue<Point> Q;
 
     int lowx, lowy, highx, highy, curx, cury, neighx, neighy, lineBottom = -1;
-    Point* curPoint;
 
     for (int j = 0; j < height; ++j) {
 
@@ -114,26 +115,22 @@ int main(void) {
                 // we have found a new character
                 ++symbolCount;
 
-                // create a new point
-                Point* newPoint = new Point;
-
                 // mark the starting values for border box and initialize newPoint
-                newPoint -> x = lowx = highx = i;
-                newPoint -> y = lowy = highy = j;
+                lowx = highx = i;
+                lowy = highy = j;
 
                 // insert point of pixel into queue
-                Q.push(newPoint);
+                Q.push(Point(i, j));
 
                 // mark pixel as visited
                 visited[i][j] = true;
 
                 while (!Q.empty()) {
                     // remove curPoint from queue
-                    curPoint = Q.pop();
-                    // grab x and y coords and cleanup curPoint
-                    curx = curPoint -> x;
-                    cury = curPoint -> y;
-                    delete curPoint;
+                    Point curPoint = Q.pop();
+                    // grab x and y coords
+                    curx = curPoint.x;
+                    cury = curPoint.y;
                     
                     // color the pixel green
                     makeGreen(TextImage(curx,cury));
@@ -148,27 +145,21 @@ int main(void) {
                     // check out the neighbors
                     for (int x = -1; x < 2; ++x) {
                         for (int y = -1; y < 2; ++y) {
-                            if (!(x == 0 && y == 0)) {
-                                neighx = curx + x;
-                                neighy = cury + y;
+                            neighx = curx + x;
+                            neighy = cury + y;
 
-                                if (    validCoords(neighx, neighy, width, height) &&
-                                        !visited[neighx][neighy] &&
-                                        isBlack( TextImage(neighx, neighy) )    ) 
-                                {
-                                    // create new point
-                                    newPoint = new Point;
-                                    newPoint -> x = neighx;
-                                    newPoint -> y = neighy;
+                            if (    validCoords(neighx, neighy, width, height) &&
+                                    !visited[neighx][neighy] &&
+                                    isBlack( TextImage(neighx, neighy) )    ) 
+                            {
 
-                                    // insert it into queue
-                                    Q.push(newPoint);
+                                // insert point into queue
+                                Q.push(Point(neighx, neighy));
 
-                                    // mark as visited
-                                    visited[neighx][neighy] = true;
+                                // mark as visited
+                                visited[neighx][neighy] = true;
 
                                 
-                                }
                             }
                         }
                     }
@@ -187,7 +178,20 @@ int main(void) {
         lastLineWhite = thisLineWhite;
     }
 
+}
+
+
+int main(void) {
+
+    BMP TextImage;
+    TextImage.ReadFromFile("text.bmp");
+    toBlackAndWhite(TextImage);
+
+    int symbolCount = 0, lineCount = 0;
+    countAndColor(TextImage, symbolCount, lineCount);
+    
     TextImage.WriteToFile("output.bmp");
+
     std::cout << "symbols: " << symbolCount << std::endl;
     std::cout << "lines: " << lineCount << std::endl;
 
