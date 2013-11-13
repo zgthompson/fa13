@@ -1,0 +1,1 @@
+These sql scripts populate db tables that are created by Django based on company models.py.

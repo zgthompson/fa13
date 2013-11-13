@@ -1,0 +1,20 @@
+Zachary Thompson
+October 25, 2013
+
+9.4
+
+The two programs give different outputs because when there is overflow the printf
+function is called, which does not preserve the values of the esi or edx registers.
+In my solution, I save the values of the addition and subtraction in the r12 and
+r13 registers which are preserved by function calls. This differs from Bob's solution
+where he saves the values on the stack.
+
+9.9
+
+For the first 8 registers: rax, rcx, rdx, rbx, rsp, rbp, rsi, and rdi the opcode
+is 50, 51, 52, 53, 54, 55, 56, and 57 respectively. There is no REX prefix
+required. For the newer 8 registers: r8, r9, r10, r11, r12, r13, r14, and r15
+the REX prefix(41 in this case) is activated for each. The opcodes are the same
+as the first 8 but now the prefix is active, so they are: 4150, 4151, 4152, 4153,
+4154, 4155, 4156, 4157 respectively.
+

@@ -1,0 +1,23 @@
+{% include "add_EtoP.html" %}
+
+{% block addEmployeeToProject %}
+
+<h3>Add employee to project</h3>
+
+<p>Please enter the name of an employee, a project, and the number of hours that the employee has worked on that project.</p>
+
+{% if form.errors  %}
+    <p style="color: red">
+      Please correct the error(s) below.
+    </p>  
+{% endif %}
+
+<form action="/add_EtoP2/" method="POST">
+{% csrf_token %}
+<table>
+{{ form.as_table }}
+</table>
+<p><input type=submit value="Do it" />
+</form>
+
+{% endblock addEmployeeToProject %}

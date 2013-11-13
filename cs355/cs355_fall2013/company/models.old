@@ -1,0 +1,40 @@
+from django.db import models
+
+class Employee( models.Model ):
+#    class Meta:
+#        db_table = 'employee'
+
+    fName = models.CharField(max_length=20)
+    mInit = models.CharField(max_length=1)
+    lName = models.CharField(max_length=40)
+    ssn = models.CharField(max_length=9,primary_key=True)
+    bDate = models.DateTimeField('birth date')
+    address = models.CharField(max_length=50)
+    sex = models.CharField(max_length=1)
+    salary = models.FloatField()
+    superSSN = models.ForeignKey('Employee',blank=True,null=True)
+    dNo = models.ForeignKey('Department',blank=True,null=True)
+
+    def supervisor(self):
+        return self.superSSN
+
+    def __unicode__(self):
+        return self.lName + ", " + self.fName
+
+    def employee_name(self):
+        return self.lName + ", " + self.fName
+
+class Department( models.Model ):
+#    class Meta:
+#        db_table = 'department'
+
+    dName = models.CharField(max_length=50,unique=True)
+    dNumber = models.IntegerField(primary_key=True)
+    mgrSSN = models.OneToOneField('Employee')
+    mgrStartDate = models.DateTimeField()
+
+    def __unicode__(self):
+        return self.dName
+
+    def num_employees(self):
+        return Employee.objects.filter(dNo=self.dNumber).count()

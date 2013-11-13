@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>Add Employees to Projects</title>
+</head>
+<body>
+
+<h3>Employees</h3>
+<table>
+  {% for employee in employees %}
+         <tr><td width="20px">{{ forloop.counter }}.</td><td>{{ employee }}</td></tr>
+  {%  endfor %}
+</table>  
+
+<h3>Projects</h3>
+<table>
+  {% for project in projects %}
+         <tr><td width="20px">{{ forloop.counter }}.</td><td>{{ project }}</td></tr>
+  {%  endfor %}
+</table>  
+
+<h3>Employees working on projects</h3>
+
+<table>
+  {% for wn in workson %}
+         <tr>
+	   <td width="20px">{{ forloop.counter }}.</td>
+	   <td width="150px">{{ wn.employee }}</td>
+	   <td width="150px">{{ wn.project }}</td>
+         </tr>
+  {%  endfor %}
+</table>  
+
+
+{% block addEmployeeToProject %}
+{% endblock addEmployeeToProject %}
+
+
+</body>
+</html>

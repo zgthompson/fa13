@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>Employees</title>
+</head>
+<body>
+<strong>There are</strong> {{ num_employees }} employees.<br />
+
+<table>
+{% for employee in employees %}
+<tr><td>{{ employee.fName }}</td><td>{{ employee.lName }}</td></tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

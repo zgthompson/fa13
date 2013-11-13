@@ -1,0 +1,36 @@
+Zachary Thompson
+October 25, 2013
+
+GAS LISTING pushq.s 			page 1
+
+
+   1              	#code
+   2              	        .text
+   3              	        .globl  main
+   4              	        .type   main, @function
+   5              	main:
+   6 0000 55       	        pushq   %rbp                #save caller's base pointer
+   7 0001 4889E5   	        movq    %rsp, %rbp          #establish our base pointer
+   8              	
+   9 0004 50       	        pushq   %rax
+  10 0005 53       	        pushq   %rbx
+  11 0006 51       	        pushq   %rcx
+  12 0007 52       	        pushq   %rdx
+  13 0008 54       	        pushq   %rsp
+  14 0009 55       	        pushq   %rbp
+  15 000a 57       	        pushq   %rdi
+  16 000b 56       	        pushq   %rsi
+  17 000c 4150     	        pushq   %r8
+  18 000e 4151     	        pushq   %r9
+  19 0010 4152     	        pushq   %r10
+  20 0012 4153     	        pushq   %r11
+  21 0014 4154     	        pushq   %r12
+  22 0016 4155     	        pushq   %r13
+  23 0018 4156     	        pushq   %r14
+  24 001a 4157     	        pushq   %r15
+  25              	
+  26 001c B8000000 	        movl    $0, %eax            #return 0 to OS
+  26      00
+  27 0021 4889EC   	        movq    %rbp, %rsp          #restore stack pointer
+  28 0024 5D       	        popq    %rbp                #restore caller's base pointer
+  29 0025 C3       	        ret
