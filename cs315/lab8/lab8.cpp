@@ -110,7 +110,7 @@ int findPath(BMP& MazeImage, int x1, int y1, int x2, int y2) {
     Point curPoint;
     Point neighbors[4];
     int curx, cury, neighx, neighy;
-    while (!Q.empty()) {
+    while ( !Q.empty() && !visited[x2 * height + y2] ) {
         curPoint = Q.pop();
 
         curx = curPoint.x;
@@ -168,7 +168,9 @@ int main(int argc, char* argv[]) {
 
         int distance = findPath(MazeImage, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
 
-        std::cout << "The total distance is " << distance << " pixels." << std::endl;
+        if (distance > 0) {
+          std::cout << "The total distance is " << distance << " pixels." << std::endl;
+        }
 
         MazeImage.WriteToFile("output.bmp");
     }
