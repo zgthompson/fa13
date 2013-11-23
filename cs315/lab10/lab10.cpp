@@ -1,25 +1,28 @@
-#include "VectorAnimator.h"
+#include "ArrayAnimator.h"
+#include "CallbackArray.h"
 #include "EasyBMP.h"
 #include <iostream>
-#include <vector>
 #include <algorithm>
 
-int VECTOR_SIZE = 100;
+int ARRAY_SIZE = 5;
 int FRAME_WIDTH = 1024;
 int FRAME_HEIGHT = 768;
 
 int main(void) {
-    std::vector<int> v(VECTOR_SIZE);
+    ArrayAnimator<int> animator(FRAME_WIDTH, FRAME_HEIGHT, ARRAY_SIZE);
+    CallbackArray<int> array(ARRAY_SIZE, &animator);
 
-    for (int i = 1; i <= v.size(); ++i) {
-        v[i] = i;
+    for (int i = 0; i < array.size(); ++i) {
+        array[i] = i+1;
     }
 
-    std::random_shuffle( v.begin(), v.end() );
+    animator.loadFirstFrame(array);
+    animator.callbackOn();
 
-    VectorAnimator va(FRAME_WIDTH, FRAME_HEIGHT, v.size());
-    for (int i = 0; i < 1000; i++) {
-        std::cout << i << std::endl;
-        va.addFrame(v);
+    std::random_shuffle( array.begin(), array.end() );
+
+    for (int i = 0; i < array.size(); ++i) {
+        std::cout << array[i] << " ";
     }
+    std::cout << std::endl;
 }
