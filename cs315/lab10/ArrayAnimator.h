@@ -4,8 +4,8 @@
 #include "EasyBMP.h"
 #include "CallbackArray.h"
 #include <string>
-#include <boost/lexical_cast.hpp>
-
+#include <iomanip>
+#include <sstream>
 
 template<class T>
 class ArrayAnimator : public ArrayCallback<T> {
@@ -16,6 +16,7 @@ class ArrayAnimator : public ArrayCallback<T> {
         void callbackOn() { callback = true; }
         void callbackOff() { callback = false; }
         void onUpdate(int index, const T& value);
+        void addPadding();
 
     private:
         BMP frame;
@@ -34,13 +35,22 @@ ArrayAnimator<T>::ArrayAnimator(int imgWidth, int imgHeight, int vectorSize) {
     size = vectorSize;
     frames = 0;
     v_offset = (imgHeight - (7 * vectorSize)) / 2;
-    h_step = (imgWidth * .8) / vectorSize;
+    h_step = imgWidth  / vectorSize;
 }
 
 template<class T>
 void ArrayAnimator<T>::addFrame() {
-    std::string filename = "frame" + boost::lexical_cast<std::string>(++frames) + ".bmp";
+    std::ostringstream ss;
+    ss << std::setw(3) << std::setfill('0') << ++frames;
+    std::string filename = "frames/frame" + ss.str() + ".bmp";
     frame.WriteToFile(filename.c_str());
+}
+
+template<class T>
+void ArrayAnimator<T>::addPadding() {
+    for (int i = 0; i < 12; ++i) {
+        addFrame();
+    }
 }
 
 template<class T>

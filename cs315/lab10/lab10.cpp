@@ -4,9 +4,9 @@
 #include <iostream>
 #include <algorithm>
 
-int ARRAY_SIZE = 5;
-int FRAME_WIDTH = 1024;
-int FRAME_HEIGHT = 768;
+int ARRAY_SIZE = 100;
+int FRAME_WIDTH = 300;
+int FRAME_HEIGHT = 750;
 
 int main(void) {
     ArrayAnimator<int> animator(FRAME_WIDTH, FRAME_HEIGHT, ARRAY_SIZE);
@@ -16,13 +16,20 @@ int main(void) {
         array[i] = i+1;
     }
 
-    animator.loadFirstFrame(array);
-    animator.callbackOn();
-
     std::random_shuffle( array.begin(), array.end() );
 
-    for (int i = 0; i < array.size(); ++i) {
-        std::cout << array[i] << " ";
+    animator.loadFirstFrame(array);
+
+    animator.addPadding();
+
+    animator.callbackOn();
+
+    std::make_heap( array.begin(), array.end() );
+    
+    for (int i = 0; i < ARRAY_SIZE; i++) {
+        std::pop_heap( array.begin(), array.end() - i);
     }
-    std::cout << std::endl;
+
+    animator.addPadding();
+
 }
