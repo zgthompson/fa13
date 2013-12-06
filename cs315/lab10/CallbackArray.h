@@ -12,6 +12,7 @@ class ArrayCallback {
     public:
         virtual ~ArrayCallback() {};
         virtual void onUpdate(int index, const T& value) = 0;
+        virtual void onComparison(const T& left, const T& right) = 0;
 };
 
 template<class T>
@@ -88,6 +89,11 @@ class WriteCheck {
         WriteCheck<T>& operator=(T const &rhs) {
             *object = rhs;
             callback -> onUpdate(index, rhs);
+        }
+
+        bool operator<(T const &rhs) {
+            callback -> onComparison(*object, rhs);
+            return *object < rhs;
         }
 
         operator T const&() {

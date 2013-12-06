@@ -4,9 +4,9 @@
 #include <iostream>
 #include <algorithm>
 
-int ARRAY_SIZE = 100;
+int ARRAY_SIZE = 30;
 int FRAME_WIDTH = 300;
-int FRAME_HEIGHT = 750;
+int FRAME_HEIGHT = 300;
 
 int main(void) {
     ArrayAnimator<int> animator(FRAME_WIDTH, FRAME_HEIGHT, ARRAY_SIZE);
@@ -32,4 +32,5 @@ int main(void) {
 
     animator.addPadding();
 
+    animator.printComparisions();
 }
